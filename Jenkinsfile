@@ -7,6 +7,11 @@ pipeline {
     }
 
     stages {
+        stage('Maven Dependency Update') {
+            steps {
+                bat 'mvn clean install -U'
+            }
+        }
         stage('Checkout') {
             steps {
                 git 'https://github.com/Sayom-0/TODOWeb.git'
