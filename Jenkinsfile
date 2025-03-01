@@ -4,7 +4,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git 'https://github.com/YOUR_USERNAME/YOUR_REPO.git'
+                git 'https://github.com/Sayom-0/TODOWeb.git'
             }
         }
 
@@ -29,8 +29,8 @@ pipeline {
         stage('Push Docker Image') {
             steps {
                 withDockerRegistry([credentialsId: 'docker-hub-credentials', url: '']) {
-                    sh 'docker tag todoweb-app YOUR_DOCKER_USERNAME/todoweb-app:latest'
-                    sh 'docker push YOUR_DOCKER_USERNAME/todoweb-app:latest'
+                    sh 'docker tag todoweb-app semstatestudentdocker/todoweb-app:latest'
+                    sh 'docker push semstatestudentdocker/todoweb-app:latest'
                 }
             }
         }
