@@ -39,15 +39,15 @@ pipeline {
         stage('Push Docker Image') {
             steps {
                 withDockerRegistry([credentialsId: 'docker-hub-credentials', url: '']) {
-                    bat 'docker tag todoweb-app semstatestudentdocker/todoweb-app:latest'
-                    bat 'docker push semstatestudentdocker/todoweb-app:latest'
+                    bat 'docker tag todoweb-app docker-hub-credentials/todoweb-app:latest'
+                    bat 'docker push docker-hub-credentials/todoweb-app:latest'
                 }
             }
         }
 
         stage('Deploy') {
             steps {
-                bat 'docker run -d -p 8080:8080 semstatestudentdocker/todoweb-app:latest'
+                bat 'docker run -d -p 8080:8080 docker-hub-credentials/todoweb-app:latest'
             }
         }
     }
