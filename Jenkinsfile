@@ -46,8 +46,9 @@ pipeline {
         }
 
         stage('Deploy') {
-            steps {
-                bat 'docker run -d -p 8080:8080 docker-hub-credentials/todoweb-app:latest'
+        steps {
+            withDockerRegistry([credentialsId: 'docker-hub-credentials', url: '']) {
+                bat 'docker run -d -p 8080:8080 semstatestudentdocker/todoweb-app:latest'
             }
         }
     }
