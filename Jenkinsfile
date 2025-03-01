@@ -46,10 +46,12 @@ pipeline {
         }
 
         stage('Deploy') {
-        steps {
-            withDockerRegistry([credentialsId: 'docker-hub-credentials', url: '']) {
-                bat 'docker run -d -p 8080:8080 semstatestudentdocker/todoweb-app:latest'
+            steps {
+                withDockerRegistry([credentialsId: 'docker-hub-credentials', url: '']) {
+                    bat 'docker run -d -p 8080:8080 semstatestudentdocker/todoweb-app:latest'
+                }
             }
         }
+
     }
 }
