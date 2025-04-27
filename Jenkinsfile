@@ -24,7 +24,7 @@ pipeline {
                         bat 'mvn clean package'
                         bat 'mvn test'
                     } catch (err) {
-                        echo "Build or Test failed on latest commit. Attempting previous commit..."
+                        echo "Build or Test failed on latest commit. Attempting previous commit..."//yippee
 
                         bat 'git reset --hard HEAD~1'
                         def previousCommit = bat(script: 'git rev-parse HEAD', returnStdout: true).trim()
