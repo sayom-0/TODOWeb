@@ -26,7 +26,7 @@ pipeline {
                     } catch (err) {
                         echo "Build or Test failed on latest commit. Attempting previous commit..."
 
-                        bat 'git checkout HEAD^'
+                        bat 'git reset --hard HEAD~1'
                         def previousCommit = bat(script: 'git rev-parse HEAD', returnStdout: true).trim()
                         echo "Trying previous commit: ${previousCommit}"
 
