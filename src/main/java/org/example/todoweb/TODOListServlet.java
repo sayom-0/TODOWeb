@@ -10,7 +10,7 @@ import java.util.List;
 
 @WebServlet("/todo")
 public class TODOListServlet extends HttpServlet
-{
+
     private TODOListRepository repository;
 
     @Override
