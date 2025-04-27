@@ -38,7 +38,7 @@ pipeline {
                             echo "Previous commit also failed!"
                             error("Both latest and previous commits failed.")
                         } finally {
-                            bat "git checkout ${currentCommit}"
+                            bat(script: "git checkout ${currentCommit}")
                         }
                     }
                 }
