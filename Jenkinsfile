@@ -48,10 +48,19 @@ pipeline {
         }
 
         stage('Build Docker Image') {
-            steps {
-                bat 'docker build -t todoweb-app .'
-            }
-        }
+                    steps {
+                        script {
+                            // Ensure that ENVIRONMENT is correctly defined and sanitized
+                            def sanitizedEnv = params.ENVIRONMENT.toLowerCase().replaceAll("[^a-z0-9-]", "-")
+                            def tag = "semstatestudentdocker/todoweb-app:${sanitizedEnv}"
+
+                            echo "Tagging the Docker image with ${tag}"
+
+                            // Tag the Docker image
+                            bat "docker tag todoweb-app ${tag}"
+                        }
+                    }
+                }
 
         stage('Push Docker Image') {
             steps {
