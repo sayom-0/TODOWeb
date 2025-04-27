@@ -47,6 +47,16 @@ pipeline {
             }
         }
 
+        stage('SonarQube Analysis') {
+            steps {
+                script {
+                    withSonarQubeEnv('SonarQube') {
+                        bat 'mvn sonar:sonar -Dsonar.projectKey=TODOWeb -Dsonar.host.url=http://your-sonarqube-server-url'
+                    }
+                }
+            }
+        }
+
         stage('Build Docker Image') {
             steps {
                 bat 'docker build -t todoweb-app .'
@@ -68,7 +78,7 @@ pipeline {
                     if (params.ENVIRONMENT == 'staging') {
                         echo "Deploying to Staging..."
                         withDockerRegistry([credentialsId: 'docker-hub-credentials', url: '']) {
-                            bat 'docker run -d -p 8079:8079 semstatestudentdocker/todoweb-app:staging'
+                            bat 'docker run -d -p 8079:8080 semstatestudentdocker/todoweb-app:staging'
                         }
                     } else if (params.ENVIRONMENT == 'production') {
                         echo "Deploying to Production..."
