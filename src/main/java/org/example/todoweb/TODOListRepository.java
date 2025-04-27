@@ -11,7 +11,7 @@ import java.util.Hashtable;
 import java.util.List;
 
 public class TODOListRepository
-{
+
     private SessionFactory sessionFactory;
     private Dictionary<Integer, Integer> itemIdDictionary;
 
