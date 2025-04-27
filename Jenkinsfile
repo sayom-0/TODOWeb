@@ -6,6 +6,10 @@ pipeline {
         PATH = "${env.PATH};C:\\Program Files\\Apache\\Maven\\bin"
     }
 
+    parameters {
+        choice(name: 'ENVIRONMENT', choices: ['staging', 'production'], description: 'Choose the environment to deploy to')
+    }
+
     stages {
         stage('Checkout') {
             steps {
@@ -52,16 +56,26 @@ pipeline {
         stage('Push Docker Image') {
             steps {
                 withDockerRegistry([credentialsId: 'docker-hub-credentials', url: '']) {
-                    bat 'docker tag todoweb-app semstatestudentdocker/todoweb-app:latest'
-                    bat 'docker push semstatestudentdocker/todoweb-app:latest'
+                    bat 'docker tag todoweb-app semstatestudentdocker/todoweb-app:${params.ENVIRONMENT}'
+                    bat 'docker push semstatestudentdocker/todoweb-app:${params.ENVIRONMENT}'
                 }
             }
         }
 
         stage('Deploy') {
             steps {
-                withDockerRegistry([credentialsId: 'docker-hub-credentials', url: '']) {
-                    bat 'docker run -d -p 8080:8080 semstatestudentdocker/todoweb-app:latest'
+                script {
+                    if (params.ENVIRONMENT == 'staging') {
+                        echo "Deploying to Staging..."
+                        withDockerRegistry([credentialsId: 'docker-hub-credentials', url: '']) {
+                            bat 'docker run -d -p 8079:8079 semstatestudentdocker/todoweb-app:staging'
+                        }
+                    } else if (params.ENVIRONMENT == 'production') {
+                        echo "Deploying to Production..."
+                        withDockerRegistry([credentialsId: 'docker-hub-credentials', url: '']) {
+                            bat 'docker run -d -p 8080:8080 semstatestudentdocker/todoweb-app:production'
+                        }
+                    }
                 }
             }
         }
