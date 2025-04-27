@@ -2,8 +2,8 @@ pipeline {
     agent any
 
     environment {
-    MAVEN_HOME = 'C:\\Program Files\\Apache\\Maven'
-    PATH = "${env.PATH};C:\\Program Files\\Apache\\Maven\\bin"
+        MAVEN_HOME = 'C:\\Program Files\\Apache\\Maven'
+        PATH = "${env.PATH};C:\\Program Files\\Apache\\Maven\\bin"
     }
 
     stages {
@@ -12,21 +12,42 @@ pipeline {
                 bat 'mvn clean install -U'
             }
         }
+
         stage('Checkout') {
             steps {
                 git 'https://github.com/Sayom-0/TODOWeb.git'
             }
         }
 
-        stage('Build') {
+        stage('Build and Test') {
             steps {
-                bat 'mvn clean package'
-            }
-        }
+                script {
+                    def currentCommit = ''
+                    try {
+                        currentCommit = bat(script: 'git rev-parse HEAD', returnStdout: true).trim()
 
-        stage('Test') {
-            steps {
-                bat 'mvn test'
+                        bat 'mvn clean package'
+
+                        bat 'mvn test'
+                    } catch (err) {
+                        echo "Build or Test failed on latest commit. Attempting previous commit..."
+
+                        bat 'git checkout HEAD^'
+                        def previousCommit = bat(script: 'git rev-parse HEAD', returnStdout: true).trim()
+                        echo "Trying previous commit: ${previousCommit}"
+
+                        try {
+                            bat 'mvn clean install -U'
+                            bat 'mvn clean package'
+                            bat 'mvn test'
+                        } catch (err2) {
+                            echo "Previous commit also failed!"
+                            error("Both latest and previous commits failed.")
+                        } finally {
+                            bat "git checkout ${currentCommit}"
+                        }
+                    }
+                }
             }
         }
 
@@ -52,6 +73,5 @@ pipeline {
                 }
             }
         }
-
     }
 }
