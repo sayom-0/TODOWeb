@@ -51,7 +51,7 @@ pipeline {
             steps {
                 script {
                     withSonarQubeEnv('SonarQube') {
-                        bat 'mvn sonar:sonar -Dsonar.projectKey=TODOWeb -Dsonar.host.url=http://your-sonarqube-server-url'
+                        bat 'mvn sonar:sonar -Dsonar.projectKey=TODOWeb -Dsonar.host.url=http://localhost:9000'
                     }
                 }
             }
