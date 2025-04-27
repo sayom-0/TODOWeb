@@ -7,15 +7,15 @@ pipeline {
     }
 
     stages {
-        stage('Maven Dependency Update') {
-            steps {
-                bat 'mvn clean install -U'
-            }
-        }
-
         stage('Checkout') {
             steps {
                 git 'https://github.com/Sayom-0/TODOWeb.git'
+            }
+        }
+
+        stage('Maven Dependency Update') {
+            steps {
+                bat 'mvn clean install -U'
             }
         }
 
@@ -27,7 +27,6 @@ pipeline {
                         currentCommit = bat(script: 'git rev-parse HEAD', returnStdout: true).trim()
 
                         bat 'mvn clean package'
-
                         bat 'mvn test'
                     } catch (err) {
                         echo "Build or Test failed on latest commit. Attempting previous commit..."
