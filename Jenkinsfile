@@ -48,25 +48,16 @@ pipeline {
         }
 
         stage('Build Docker Image') {
-                    steps {
-                        script {
-                            // Ensure that ENVIRONMENT is correctly defined and sanitized
-                            def sanitizedEnv = params.ENVIRONMENT.toLowerCase().replaceAll("[^a-z0-9-]", "-")
-                            def tag = "semstatestudentdocker/todoweb-app:${sanitizedEnv}"
-
-                            echo "Tagging the Docker image with ${tag}"
-
-                            // Tag the Docker image
-                            bat "docker tag todoweb-app ${tag}"
-                        }
-                    }
-                }
+            steps {
+                bat 'docker build -t todoweb-app .'
+            }
+        }
 
         stage('Push Docker Image') {
             steps {
                 withDockerRegistry([credentialsId: 'docker-hub-credentials', url: '']) {
-                    bat 'docker tag todoweb-app semstatestudentdocker/todoweb-app:${params.ENVIRONMENT}'
-                    bat 'docker push semstatestudentdocker/todoweb-app:${params.ENVIRONMENT}'
+                    bat 'docker tag todoweb-app semstatestudentdocker/todoweb-app:' + ${params.ENVIRONMENT}
+                    bat 'docker push semstatestudentdocker/todoweb-app:' + ${params.ENVIRONMENT}
                 }
             }
         }
