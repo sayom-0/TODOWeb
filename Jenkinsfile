@@ -13,12 +13,6 @@ pipeline {
             }
         }
 
-        stage('Maven Dependency Update') {
-            steps {
-                bat 'mvn clean install -U'
-            }
-        }
-
         stage('Build and Test') {
             steps {
                 script {
@@ -26,6 +20,7 @@ pipeline {
                     try {
                         currentCommit = bat(script: 'git rev-parse HEAD', returnStdout: true).trim()
 
+                        bat 'mvn clean install -U'     // Moved here under protection
                         bat 'mvn clean package'
                         bat 'mvn test'
                     } catch (err) {
@@ -43,6 +38,7 @@ pipeline {
                             echo "Previous commit also failed!"
                             error("Both latest and previous commits failed.")
                         } finally {
+                            // Always restore original commit
                             bat "git checkout ${currentCommit}"
                         }
                     }
