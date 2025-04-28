@@ -56,8 +56,8 @@ pipeline {
         stage('Push Docker Image') {
             steps {
                 withDockerRegistry([credentialsId: 'docker-hub-credentials', url: '']) {
-                    bat 'docker tag todoweb-app semstatestudentdocker/todoweb-app:' + ${params.ENVIRONMENT}
-                    bat 'docker push semstatestudentdocker/todoweb-app:' + ${params.ENVIRONMENT}
+                    bat "docker tag todoweb-app semstatestudentdocker/todoweb-app:${params.ENVIRONMENT}"
+                    bat "docker push semstatestudentdocker/todoweb-app:${params.ENVIRONMENT}"
                 }
             }
         }
